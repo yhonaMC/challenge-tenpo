@@ -1,43 +1,56 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import App from './App'
 import './index.css'
+import App from './App.tsx'
 
-// Crear cliente de React Query
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-      retry: 1
-    }
-  }
-})
+const queryClient = new QueryClient()
 
-// Inicializar MSW en desarrollo
+window.mswReady = false
+
 async function prepare() {
   if (import.meta.env.DEV) {
-    const { worker } = await import('./mocks/browser')
-    
-    // Iniciar el worker con opciones
-    await worker.start({
-      onUnhandledRequest: 'bypass', // No mostrar advertencias para peticiones no manejadas
-    })
-    
-    console.log('[MSW] Mock Service Worker iniciado')
+    try {
+      const { worker } = await import('./mocks/browser')
+
+      window.addEventListener('unhandledrejection', (event) => {
+        console.error('[MSW] Unhandled promise rejection:', event.reason)
+      })
+
+      await worker.start({
+        onUnhandledRequest: 'bypass',
+        serviceWorker: {
+          url: '/mockServiceWorker.js',
+          options: {
+            scope: '/'
+          }
+        }
+      })
+
+      window.mswReady = true
+      console.log('[MSW] Mock Service Worker initialized successfully')
+      console.log('[MSW] Login test: use demo@tenpo.com / 12345678')
+    } catch (error) {
+      console.error('[MSW] Failed to initialize Mock Service Worker:', error)
+    }
   }
 }
 
-// Inicializar MSW antes de renderizar la aplicación
 prepare().then(() => {
-  ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
-      <BrowserRouter>
+  createRoot(document.getElementById('root')!).render(
+    <BrowserRouter>
+      <StrictMode>
         <QueryClientProvider client={queryClient}>
           <App />
         </QueryClientProvider>
-      </BrowserRouter>
-    </React.StrictMode>
+      </StrictMode>
+    </BrowserRouter>
   )
 })
+
+declare global {
+  interface Window {
+    mswReady: boolean
+  }
+}
