@@ -1,62 +1,59 @@
 import { http, HttpResponse, delay } from 'msw'
 
-// Definir la interfaz para los datos de login
+// Interface for login data
 interface LoginRequest {
   email: string;
   password: string;
 }
 
-// Token fijo para facilitar pruebas
-const DEMO_TOKEN = 'token-fake-demo-tenpo-123456'
+// Demo token - would be dynamically generated in a real API
+const DEMO_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
 
-// Definimos nuestros handlers para interceptar peticiones HTTP
+// Mock API handlers
 export const handlers = [
+  // Login handler
   http.post('/api/auth/login', async ({ request }) => {
-    // Simular un retraso para imitar la latencia de red
-    await delay(500)
+    // Simulate network delay
+    await delay(500);
     
-    // Extraer datos de la solicitud
-    const data = await request.json() as LoginRequest
-    const { email, password } = data
+    // Parse request body
+    const data = await request.json() as LoginRequest;
+    const { email, password } = data;
     
-    console.log(`Intento de login con email: ${email}`)
+    console.log('Login attempt:', { email, password: '*'.repeat(password.length) });
     
-    // Validación simple de credenciales
-    // En este caso, cualquier email válido y una contraseña de al menos 8 caracteres
-    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-    const isValidPassword = password && password.length >= 8
+    // Simple validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isValidEmail = emailRegex.test(email);
+    const isValidPassword = password.length >= 8;
     
     if (isValidEmail && isValidPassword) {
-      // Usar un token fijo para demo@tenpo.com y tokens aleatorios para otros usuarios
-      const fakeToken = email === 'demo@tenpo.com' 
-        ? DEMO_TOKEN 
-        : `fake-token-${Math.random().toString(36).substring(2, 15)}`
+      // Generate mock user data
+      const userId = Math.random().toString(36).substring(2, 15);
+      const name = email.split('@')[0];
       
-      console.log(`Login exitoso. Token generado: ${fakeToken}`)
-
+      console.log('Login successful, generating token');
+      
+      // Return success response
       return HttpResponse.json(
-        { 
-          token: fakeToken,
+        {
+          token: DEMO_TOKEN,
           user: {
-            id: 1,
+            id: userId,
             email,
-            name: email === 'demo@tenpo.com' ? 'Usuario Demo Tenpo' : 'Usuario Demo'
+            name: name.charAt(0).toUpperCase() + name.slice(1),
           }
         },
-        { 
-          status: 200,
-          headers: {
-            'Authorization': `Bearer ${fakeToken}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      )
+        { status: 200 }
+      );
     } else {
-      // Si las credenciales no son válidas, devolvemos un error
+      console.log('Login failed: invalid credentials');
+      
+      // Return error response
       return HttpResponse.json(
-        { message: 'Credenciales inválidas' },
+        { message: 'Invalid email or password' },
         { status: 401 }
-      )
+      );
     }
-  })
+  }),
 ]
