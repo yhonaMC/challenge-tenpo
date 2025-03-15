@@ -2,13 +2,13 @@
 /* tslint:disable */
 
 /**
- * Mock Service Worker (v2.7.3).
+ * Mock Service Worker (1.3.6).
  * @see https://github.com/mswjs/msw
  * - Please do NOT modify this file.
  * - Please do NOT serve this file on production.
  */
 
-const INTEGRITY_CHECKSUM = '0bfa02c42a1e9a8136cb4fb201a8ce3e'
+const INTEGRITY_CHECKSUM = '31674c38d2f18231fc693631f2c3fea2'
 const activeClientIds = new Set()
 
 self.addEventListener('install', function () {
@@ -105,19 +105,32 @@ self.addEventListener('fetch', function (event) {
   }
 
   // Bypass all requests when there are no active clients.
-  // Prevents the self-unregistration when not needed.
+  // Prevents the self-unregistration if a client refreshes the page.
   if (activeClientIds.size === 0) {
     return
   }
 
   // Generate unique request ID.
-  const requestId = Math.random().toString(16).slice(2)
+  const requestId = crypto.randomUUID()
 
   event.respondWith(
     handleRequest(event, requestId).catch((error) => {
+      if (error.name === 'NetworkError') {
+        console.warn(
+          '[MSW] Successfully emulated a network error for the "%s %s" request.',
+          request.method,
+          request.url,
+        )
+        return
+      }
+
+      // At this point, any exception indicates an issue with the original request/response.
       console.error(
-        '[MSW] Error occurred while handling request:',
-        error,
+        `\
+[MSW] Caught an exception from the "%s %s" request (%s). This is probably not a problem with Mock Service Worker. There is likely an additional logging output above.`,
+        request.method,
+        request.url,
+        `${error.name}: ${error.message}`,
       )
     }),
   )
@@ -132,19 +145,19 @@ async function handleRequest(event, requestId) {
   // this message will pend indefinitely.
   if (client && activeClientIds.has(client.id)) {
     ;(async function () {
-      const clonedResponse = response.clone()
+      const responseClone = response.clone()
       sendToClient(client, {
         type: 'RESPONSE',
         payload: {
           requestId,
-          type: clonedResponse.type,
-          ok: clonedResponse.ok,
-          status: clonedResponse.status,
-          statusText: clonedResponse.statusText,
+          type: responseClone.type,
+          ok: responseClone.ok,
+          status: responseClone.status,
+          statusText: responseClone.statusText,
           body:
-            clonedResponse.body === null ? null : await clonedResponse.text(),
-          headers: Object.fromEntries(clonedResponse.headers.entries()),
-          redirected: clonedResponse.redirected,
+            responseClone.body === null ? null : await responseClone.text(),
+          headers: Object.fromEntries(responseClone.headers.entries()),
+          redirected: responseClone.redirected,
         },
       })
     })()
@@ -185,8 +198,7 @@ async function getResponse(event, client, requestId) {
   const clonedRequest = request.clone()
 
   function passthrough() {
-    // Clone the request because it might've been already used
-    // (i.e. its body has been read and sent to the client).
+    // Clone the request because it might've been already used.
     const headers = Object.fromEntries(clonedRequest.headers.entries())
 
     // Remove MSW-specific request headers so the bypassed requests
@@ -278,8 +290,5 @@ function sendToClient(client, message) {
 }
 
 function respondWithMock(response) {
-  return new Response(response.body, {
-    ...response,
-    headers: new Headers(response.headers),
-  })
+  return new Response(response.body, response)
 }
