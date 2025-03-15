@@ -1,8 +1,8 @@
 # Challenge Tenpo
 
-Aplicación React con sistema de autenticación simulado usando Mock Service Worker (MSW).
+React application with simulated authentication system using Mock Service Worker (MSW).
 
-## Tecnologías utilizadas
+## Technologies
 
 - React 18
 - TypeScript
@@ -11,87 +11,87 @@ Aplicación React con sistema de autenticación simulado usando Mock Service Wor
 - React Query
 - Tailwind CSS
 - Mock Service Worker (MSW)
-- Zustand (para manejo de estado)
-- Axios (para peticiones HTTP)
+- Zustand (for state management)
+- Axios (for HTTP requests)
 
-## Características
+## Features
 
-- Sistema de autenticación simulado con MSW
-- Formulario de login con validaciones
-- Rutas protegidas
-- Persistencia de sesión con localStorage
-- Diseño responsive con Tailwind CSS
-- Componentes UI reutilizables
+- Simulated authentication system with MSW
+- Login form with validations
+- Protected routes
+- Session persistence with localStorage
+- Responsive design with Tailwind CSS
+- Reusable UI components
 
-## Instalación
+## Installation
 
-1. Clona el repositorio:
+1. Clone the repository:
 ```bash
 git clone https://github.com/yhonaMC/challenge-tenpo.git
 cd challenge-tenpo
 ```
 
-2. Instala las dependencias:
+2. Install dependencies:
 ```bash
 pnpm install
 ```
 
-3. Inicia el servidor de desarrollo:
+3. Start the development server:
 ```bash
 pnpm dev
 ```
 
-La aplicación estará disponible en [http://localhost:5173](http://localhost:5173)
+The application will be available at [http://localhost:5173](http://localhost:5173)
 
-## Uso
+## Usage
 
-### Credenciales para login
+### Login credentials
 
-Puedes usar cualquier combinación de email y contraseña que cumpla con las validaciones:
+You can use any combination of email and password that meets the validations:
 
-- **Email**: Cualquier email con formato válido (ej: `usuario@example.com`)
-- **Contraseña**: Cualquier contraseña de al menos 8 caracteres
+- **Email**: Any valid email format (e.g.: `user@example.com`)
+- **Password**: Any password with at least 8 characters
 
-### Flujo de la aplicación
+### Application flow
 
-1. Al iniciar la aplicación, serás redirigido a la página de login
-2. Ingresa un email y contraseña válidos
-3. Después de iniciar sesión, serás redirigido al dashboard
-4. Puedes cerrar sesión con el botón en la esquina superior derecha
+1. When starting the application, you'll be redirected to the login page
+2. Enter a valid email and password
+3. After logging in, you'll be redirected to the dashboard
+4. You can log out with the button in the upper right corner
 
-## Cómo funciona la autenticación simulada
+## How simulated authentication works
 
-Esta aplicación utiliza Mock Service Worker (MSW) para interceptar las peticiones HTTP y simular un backend:
+This application uses Mock Service Worker (MSW) to intercept HTTP requests and simulate a backend:
 
-1. MSW intercepta la petición POST a `/api/auth/login`
-2. Valida que el email tenga formato correcto y la contraseña al menos 8 caracteres
-3. Devuelve un token JWT simulado y datos de usuario
-4. El token se almacena en localStorage y se configura en los headers de Axios
-5. Las rutas protegidas verifican la autenticación antes de renderizar
+1. MSW intercepts the POST request to `/api/auth/login`
+2. It validates that the email has the correct format and the password has at least 8 characters
+3. It returns a simulated JWT token and user data
+4. The token is stored in localStorage and configured in Axios headers
+5. Protected routes verify authentication before rendering
 
-## Estructura del proyecto
+## Project structure
 
 ```
 src/
-├── components/         # Componentes reutilizables
-│   ├── auth/           # Componentes relacionados con autenticación
-│   └── ui/             # Componentes de UI genéricos
-├── lib/                # Utilidades y servicios
-│   ├── context/        # Contextos de React
-│   └── services/       # Servicios para API
-├── mocks/              # Configuración de MSW
-├── pages/              # Páginas/rutas de la aplicación
-└── App.tsx             # Componente principal
+├── components/         # Reusable components
+│   ├── auth/           # Authentication-related components
+│   └── ui/             # Generic UI components
+├── lib/                # Utilities and services
+│   ├── context/        # React contexts
+│   └── services/       # API services
+├── mocks/              # MSW configuration
+├── pages/              # Application pages/routes
+└── App.tsx             # Main component
 ```
 
-## Desarrollo
+## Development
 
-Para ejecutar las pruebas:
+To run tests:
 ```bash
 pnpm test
 ```
 
-Para construir la aplicación para producción:
+To build the application for production:
 ```bash
 pnpm build
 ```
