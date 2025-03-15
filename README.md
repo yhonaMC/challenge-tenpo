@@ -23,6 +23,18 @@ React application with simulated authentication system using Mock Service Worker
 - Responsive design with Tailwind CSS
 - Reusable UI components
 
+## Home Page List Implementation
+
+The list in the home page is implemented using a virtualized list approach for optimal performance. We chose to use React Query to manage data fetching and caching, combined with react-window for virtualization. This implementation:
+
+1. **Efficient Data Loading**: Uses React Query's automatic caching and background refetching to minimize API calls
+2. **Virtualized Rendering**: Only renders visible items in the DOM, greatly improving performance with large datasets
+3. **Responsive Grid Layout**: Adapts to different screen sizes using Tailwind's responsive utilities
+4. **Pagination Support**: Implements cursor-based pagination for efficient data loading
+5. **Optimistic Updates**: Provides instant feedback while changes are being processed on the server
+
+This approach was selected because it balances performance with developer experience, allowing for smooth scrolling even with thousands of items while maintaining a clean, maintainable codebase.
+
 ## Installation
 
 1. Clone the repository:
@@ -86,6 +98,10 @@ src/
 
 ## Development
 
+To run tests:
+```bash
+pnpm test
+```
 
 To build the application for production:
 ```bash
