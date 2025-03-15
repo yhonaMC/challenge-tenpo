@@ -1,11 +1,12 @@
 import { setupWorker } from 'msw/browser'
 import { handlers } from './handlers'
 
-// Configuramos el Service Worker con nuestros manejadores
+// Configure the Service Worker with our handlers
 export const worker = setupWorker(...handlers)
 
-// Agregamos mensajes de depuración
-console.log('[MSW] Configuración inicializada con los siguientes handlers:')
-handlers.forEach((handler, index) => {
-  console.log(`[MSW] Handler ${index + 1}:`, handler.info.method, handler.info.path)
-})
+// Log the initialized handlers for debugging
+console.log('MSW Handlers:', handlers.map(handler => {
+  // @ts-ignore - Access internal properties for debugging
+  const { method, path } = handler.info
+  return `${method} ${path}`
+}))
