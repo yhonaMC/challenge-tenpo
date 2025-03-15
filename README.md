@@ -86,10 +86,6 @@ src/
 
 ## Development
 
-To run tests:
-```bash
-pnpm test
-```
 
 To build the application for production:
 ```bash
