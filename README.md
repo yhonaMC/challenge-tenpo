@@ -79,7 +79,7 @@ Esta aplicación utiliza un sistema de autenticación simulado:
 
 - Cualquier combinación de correo electrónico y contraseña no vacía funcionará
 - El estado de autenticación se gestiona en memoria usando Zustand
-- No se implementa persistencia de datos (según los requisitos)
+
 
 ## Uso de la API
 
