@@ -21,6 +21,14 @@ La lista en la página principal está implementada utilizando un enfoque de lis
 
 Este enfoque fue seleccionado porque equilibra el rendimiento con la experiencia del desarrollador, permitiendo un desplazamiento suave incluso con miles de elementos mientras mantiene una base de código limpia y mantenible.
 
+## Propuesta para Mejorar Llamadas al Backend
+
+Para optimizar las interacciones con el backend y mejorar el rendimiento general de la aplicación, se proponen las siguientes estrategias:
+
+- Implementar una estrategia de caching robusta tanto en el lado del cliente (la app) como en el lado del servidor
+- Considerar la implementación de GraphQL o un enfoque similar que permita a la aplicación solicitar específicamente los campos de datos que necesita en cada consulta
+- Almacenar localmente datos que no cambian con frecuencia
+
 ## Tecnologías Utilizadas
 
 - **React 19** con TypeScript para el frontend
@@ -79,7 +87,7 @@ Esta aplicación utiliza un sistema de autenticación simulado:
 
 - Cualquier combinación de correo electrónico y contraseña no vacía funcionará
 - El estado de autenticación se gestiona en memoria usando Zustand
-
+- No se implementa persistencia de datos (según los requisitos)
 
 ## Uso de la API
 
