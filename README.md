@@ -1,109 +1,100 @@
-# Challenge Tenpo
+# Aplicación de Usuarios Aleatorios
 
-React application with simulated authentication system using Mock Service Worker (MSW).
+Una aplicación React + TypeScript que implementa autenticación simulada y consume la API RandomUser.me para mostrar información de usuarios.
 
-## Technologies
+## Características
 
-- React 18
-- TypeScript
-- Vite
-- React Router
-- React Query
-- Tailwind CSS
-- Mock Service Worker (MSW)
-- Zustand (for state management)
-- Axios (for HTTP requests)
+- **Autenticación Simulada**: Flujo de inicio/cierre de sesión simulado con gestión de tokens
+- **Integración de API**: Consume la API RandomUser.me para obtener y mostrar datos de usuarios
+- **Carga de Datos Optimizada**: Implementa desplazamiento infinito y virtualización para manejar grandes conjuntos de datos
+- **Interfaz Moderna**: Diseño futurista utilizando Tailwind CSS y componentes shadcn/ui
 
-## Features
+## Implementación de la Lista en la Página Principal
 
-- Simulated authentication system with MSW
-- Login form with validations
-- Protected routes
-- Session persistence with localStorage
-- Responsive design with Tailwind CSS
-- Reusable UI components
+La lista en la página principal está implementada utilizando un enfoque de lista virtualizada para un rendimiento óptimo. Elegimos usar React Query para gestionar la obtención y el caché de datos, combinado con react-window para la virtualización. Esta implementación:
 
-## Home Page List Implementation
+1. **Carga Eficiente de Datos**: Utiliza el caché automático y la recarga en segundo plano de React Query para minimizar las llamadas a la API
+2. **Renderizado Virtualizado**: Solo renderiza los elementos visibles en el DOM, mejorando significativamente el rendimiento con grandes conjuntos de datos
+3. **Diseño de Cuadrícula Responsivo**: Se adapta a diferentes tamaños de pantalla utilizando las utilidades responsivas de Tailwind
+4. **Desplazamiento Infinito**: Implementa carga de datos automática al desplazarse para una experiencia fluida
+5. **Actualizaciones Optimistas**: Proporciona retroalimentación instantánea mientras los cambios se procesan en el servidor
 
-The list in the home page is implemented using a virtualized list approach for optimal performance. We chose to use React Query to manage data fetching and caching, combined with react-window for virtualization. This implementation:
+Este enfoque fue seleccionado porque equilibra el rendimiento con la experiencia del desarrollador, permitiendo un desplazamiento suave incluso con miles de elementos mientras mantiene una base de código limpia y mantenible.
 
-1. **Efficient Data Loading**: Uses React Query's automatic caching and background refetching to minimize API calls
-2. **Virtualized Rendering**: Only renders visible items in the DOM, greatly improving performance with large datasets
-3. **Responsive Grid Layout**: Adapts to different screen sizes using Tailwind's responsive utilities
-4. **Pagination Support**: Implements cursor-based pagination for efficient data loading
-5. **Optimistic Updates**: Provides instant feedback while changes are being processed on the server
+## Tecnologías Utilizadas
 
-This approach was selected because it balances performance with developer experience, allowing for smooth scrolling even with thousands of items while maintaining a clean, maintainable codebase.
+- **React 19** con TypeScript para el frontend
+- **Zustand** para gestión de estado
+- **Axios** para peticiones a la API
+- **React Query** para obtención y caché de datos
+- **React Router** para navegación
+- **React Window** para listas virtualizadas
+- **Tailwind CSS** para estilos
 
-## Installation
+## Estructura del Proyecto
 
-1. Clone the repository:
+- `src/components`: Componentes UI reutilizables
+- `src/lib`: Utilidades, hooks y stores
+- `src/pages`: Componentes principales de páginas
+- `src/lib/context`: Contexto de autenticación para rutas protegidas
+- `src/lib/hooks`: Hooks personalizados para obtención de datos
+
+## Primeros Pasos
+
+### Requisitos Previos
+
+- Node.js (v18 o superior)
+- npm o pnpm
+
+### Instalación
+
+1. Clonar el repositorio:
+
 ```bash
-git clone https://github.com/yhonaMC/challenge-tenpo.git
-cd challenge-tenpo
+git clone <url-del-repositorio>
+cd random-users-app
 ```
 
-2. Install dependencies:
+2. Instalar dependencias:
+
 ```bash
+npm install
+# o
 pnpm install
 ```
 
-3. Start the development server:
+3. Iniciar el servidor de desarrollo:
+
 ```bash
+npm run dev
+# o
 pnpm dev
 ```
 
-The application will be available at [http://localhost:5173](http://localhost:5173)
+4. Abrir [http://localhost:5173](http://localhost:5173) para ver la aplicación en tu navegador.
 
-## Usage
+## Autenticación
 
-### Login credentials
+Esta aplicación utiliza un sistema de autenticación simulado:
 
-You can use any combination of email and password that meets the validations:
+- Cualquier combinación de correo electrónico y contraseña no vacía funcionará
+- El estado de autenticación se gestiona en memoria usando Zustand
+- No se implementa persistencia de datos (según los requisitos)
 
-- **Email**: Any valid email format (e.g.: `user@example.com`)
-- **Password**: Any password with at least 8 characters
+## Uso de la API
 
-### Application flow
+La aplicación obtiene usuarios de la API RandomUser.me:
 
-1. When starting the application, you'll be redirected to the login page
-2. Enter a valid email and password
-3. After logging in, you'll be redirected to the dashboard
-4. You can log out with the button in the upper right corner
+- Cada página obtiene 50 usuarios a la vez
+- Se implementa desplazamiento infinito para una carga de datos fluida
+- La solicitud a la API incluye el token de autenticación en los encabezados
 
-## How simulated authentication works
+## Compilación para Producción
 
-This application uses Mock Service Worker (MSW) to intercept HTTP requests and simulate a backend:
-
-1. MSW intercepts the POST request to `/api/auth/login`
-2. It validates that the email has the correct format and the password has at least 8 characters
-3. It returns a simulated JWT token and user data
-4. The token is stored in localStorage and configured in Axios headers
-5. Protected routes verify authentication before rendering
-
-## Project structure
-
-```
-src/
-├── components/         # Reusable components
-│   ├── auth/           # Authentication-related components
-│   └── ui/             # Generic UI components
-├── lib/                # Utilities and services
-│   ├── context/        # React contexts
-│   └── services/       # API services
-├── mocks/              # MSW configuration
-├── pages/              # Application pages/routes
-└── App.tsx             # Main component
-```
-
-## Development
-
-To run tests:
 ```bash
-pnpm test
-```
-
-To build the application for production:
-```bash
+npm run build
+# o
 pnpm build
 ```
+
+Esto generará archivos optimizados para producción en el directorio `dist`.
